@@ -77,7 +77,7 @@ const AuthForm = ({ formType }) => {
                         <div className="relative">
                             <UserCircle size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                             <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)}
-                                className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="John Doe" disabled={isAuthenticating} />
+                                className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="Your name" disabled={isAuthenticating} />
                         </div>
                     </div>
                     <div>
