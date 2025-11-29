@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import '~leaflet/dist/leaflet.css';
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  @apply bg-gray-950 text-gray-100; /* Even darker base */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif; /* Futuristic header font */
+}
+
+/* Custom scrollbar for a sleeker look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1f2937; /* Darker track */
+}
+::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* Blue thumb */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #60a5fa;
+}
+
+/* Global focus state for input elements */
+input:focus, button:focus, a:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
+}
+
+/* Glowing effects for buttons, cards, and text */
+.glow-effect {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), /* Blue glow */
+              0 0 30px rgba(59, 130, 246, 0.2);
+}
+.glow-text {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+.holographic-card {
+  @apply bg-gray-900 border border-blue-800/50 rounded-xl relative overflow-hidden;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+}
+
+.holographic-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    rgba(59, 130, 246, 0) 0%,
+    rgba(59, 130, 246, 0.1) 30%,
+    rgba(59, 130, 246, 0.2) 50%,
+    rgba(59, 130, 246, 0.1) 70%,
+    rgba(59, 130, 246, 0) 100%
+  );
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none; /* <--- THIS IS THE ONLY ADDITION FROM YOUR PROVIDED CSS */
+}
+
+.holographic-card:hover::before {
+  opacity: 1;
+}
+
+/* Utility for dynamic gradients on budget sliders etc. */
+.bg-gradient-futuristic {
+  background-image: linear-gradient(to right, #00c6ff, #0072ff);
+}
