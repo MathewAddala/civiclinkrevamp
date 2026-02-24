@@ -7,6 +7,7 @@ import IssuesPage from './pages/IssuesPage.jsx';
 import ProjectKickstarterPage from './pages/ProjectKickstarterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import MapViewPage from './pages/MapViewPage.jsx'; // 🌟 FINAL, STABLE MAP IMPORT 🌟
+import DesignToolPage from './pages/DesignToolPage.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
@@ -34,7 +35,10 @@ export default function AppRouter() {
       {/* 🌟 FINAL, SIMPLE REACT-LEAFLET ROUTE 🌟 */}
       <Route path="/map-view" element={<ProtectedRoute><MapViewPage /></ProtectedRoute>} /> 
       
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Design Tool - accessible without auth for prototyping */}
+      <Route path="/design" element={<DesignToolPage />} />
+      
+      <Route path="*" element={<Navigate to="/design" replace />} />
     </Routes>
   );
 }
