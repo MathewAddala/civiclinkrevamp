@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'; // NEW: Add useEffect
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sun, Bell, UserCircle2, ChevronDown, LogOut, Settings, LogIn } from 'lucide-react'; // NEW: Add LogIn icon
+import { Search, Sun, Bell, UserCircle2, ChevronDown, LogOut, Settings, LogIn } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { useNavigate } from 'react-router-dom'; // NEW IMPORT
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
-  const navigate = useNavigate(); // NEW: For redirecting
+  const navigate = useNavigate();
 
-  // Close dropdown if clicked outside
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isDropdownOpen && !event.target.closest('.user-dropdown-container')) {
@@ -24,12 +24,12 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    setIsDropdownOpen(false); // Close dropdown
+    setIsDropdownOpen(false);
   };
 
   const handleLoginRedirect = () => {
     navigate('/login');
-    setIsDropdownOpen(false); // Close dropdown
+    setIsDropdownOpen(false);
   };
 
   const dropdownVariants = {
@@ -45,7 +45,7 @@ export default function Navbar() {
       transition={{ type: 'spring', stiffness: 120, damping: 18, delay: 0.1 }}
       className="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center z-10 relative shadow-xl"
     >
-      {/* Search Bar */}
+
       <div className="relative">
         <input
           type="text"
@@ -57,26 +57,26 @@ export default function Navbar() {
         </span>
       </div>
       
-      {/* User Profile Section */}
+
       <div className="flex items-center space-x-4">
         <motion.button 
           whileHover={{ scale: 1.1, color: '#3B82F6' }}
           whileTap={{ scale: 0.9 }}
           className="p-2 rounded-full text-gray-400 hover:bg-gray-800 transition-colors duration-200"
         >
-          <Sun size={22} /> {/* Theme Toggle (Placeholder) */}
+          <Sun size={22} />
         </motion.button>
         <motion.button 
           whileHover={{ scale: 1.1, color: '#3B82F6' }}
           whileTap={{ scale: 0.9 }}
           className="p-2 rounded-full text-gray-400 hover:bg-gray-800 transition-colors duration-200"
         >
-          <Bell size={22} /> {/* Notifications (Placeholder) */}
+          <Bell size={22} />
         </motion.button>
         
-        {/* User Dropdown */}
+
         <motion.div
-          className="relative user-dropdown-container" // Add a class for click outside detection
+          className="relative user-dropdown-container"
         >
           <motion.div
             whileTap={{ scale: 0.95 }}
@@ -108,9 +108,9 @@ export default function Navbar() {
                   >
                     <Settings size={18} className="mr-2" /> Settings
                   </motion.a>
-                  {user?.role !== 'guest' ? ( // Check if not a guest user
+                  {user?.role !== 'guest' ? (
                     <motion.button 
-                      onClick={handleLogout} // Call handleLogout
+                      onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-red-400 hover:bg-gray-700 transition-colors duration-150"
                       whileHover={{ x: 5 }}
                     >
@@ -118,7 +118,7 @@ export default function Navbar() {
                     </motion.button>
                   ) : (
                     <motion.button 
-                      onClick={handleLoginRedirect} // Redirect to login page
+                      onClick={handleLoginRedirect}
                       className="flex items-center w-full px-4 py-2 text-green-400 hover:bg-gray-700 transition-colors duration-150"
                       whileHover={{ x: 5 }}
                     >

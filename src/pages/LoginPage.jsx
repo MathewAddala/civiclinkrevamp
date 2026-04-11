@@ -12,7 +12,7 @@ const AuthForm = ({ formType }) => {
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [formError, setFormError] = useState('');
-    const [isCaptchaValid, setIsCaptchaValid] = useState(false); // 🌟 NEW CAPTCHA STATE 🌟
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
 
     const isLogin = formType === 'login';
 
@@ -21,7 +21,7 @@ const AuthForm = ({ formType }) => {
         setError(null);
     }, [formType, setError]);
     
-    // Handle form submission logic
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormError('');
@@ -36,7 +36,7 @@ const AuthForm = ({ formType }) => {
             return;
         }
         
-        // 🌟 CAPTCHA CHECK 🌟
+
         if (!isCaptchaValid) {
             setFormError("Please correctly solve the security CAPTCHA.");
             return;
@@ -51,13 +51,13 @@ const AuthForm = ({ formType }) => {
     
     const buttonText = isLogin ? (isAuthenticating ? 'Logging In...' : 'Login') : (isAuthenticating ? 'Signing Up...' : 'Sign Up');
     
-    // Determine if the main button should be disabled
+
     const isSubmitDisabled = isAuthenticating || !isCaptchaValid;
 
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Display global Auth context error or local form error */}
+
             {(error || formError) && (
                 <motion.div 
                     initial={{ opacity: 0, y: -10 }}
@@ -68,7 +68,7 @@ const AuthForm = ({ formType }) => {
                 </motion.div>
             )}
 
-            {/* Sign Up Fields */}
+
             {!isLogin && (
                 <>
                     <div>
@@ -85,7 +85,7 @@ const AuthForm = ({ formType }) => {
                 </>
             )}
 
-            {/* Email Field */}
+
             <div>
                 <label htmlFor="email" className="block text-gray-400 text-sm font-bold mb-2">Email</label>
                 <div className="relative">
@@ -95,7 +95,7 @@ const AuthForm = ({ formType }) => {
                 </div>
             </div>
 
-            {/* Password Field */}
+
             <div>
                 <label htmlFor="password" className="block text-gray-400 text-sm font-bold mb-2">Password</label>
                 <div className="relative">
@@ -105,7 +105,7 @@ const AuthForm = ({ formType }) => {
                 </div>
             </div>
 
-            {/* Confirm Password Field */}
+
             {!isLogin && (
                 <div>
                     <label htmlFor="confirmPassword" className="block text-gray-400 text-sm font-bold mb-2">Confirm Password</label>
@@ -117,7 +117,7 @@ const AuthForm = ({ formType }) => {
                 </div>
             )}
             
-            {/* 🌟 CAPTCHA INTEGRATION 🌟 */}
+
             <div className="glass-panel p-3 rounded-xl border-white/10 backdrop-blur-lg">
                 <MathCaptcha 
                     onValidationChange={setIsCaptchaValid} 
@@ -145,9 +145,9 @@ const AuthForm = ({ formType }) => {
 export default function LoginPage() {
   const { isAuthenticating, user } = useAuth();
   const navigate = useNavigate();
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [authMode, setAuthMode] = useState('login');
 
-  // FIX: If user is logged in, redirect them away from /login
+
   useEffect(() => {
     if (user && user.role !== 'guest') {
       navigate('/dashboard', { replace: true });
@@ -157,7 +157,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050505] text-gray-100 p-4 relative overflow-hidden">
-      {/* Background flare */}
+
       <div className="absolute top-[-50px] right-[-50px] w-[300px] h-[300px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
       
       <motion.div
@@ -170,7 +170,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-extrabold text-white font-orbitron tracking-tight">CivicLink</h1>
         </div>
 
-        {/* Auth Mode Toggle */}
+
         <div className="flex mb-6 bg-black/40 rounded-xl p-1.5 border border-white/5 backdrop-blur-md">
             <button
                 type="button"

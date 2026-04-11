@@ -1,4 +1,4 @@
-// src/components/common/ProjectProposalCard.jsx
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Target, CheckCircle, XCircle } from 'lucide-react';

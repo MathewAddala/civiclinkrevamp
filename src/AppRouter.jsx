@@ -6,7 +6,7 @@ import BudgetPage from './pages/BudgetPage.jsx';
 import IssuesPage from './pages/IssuesPage.jsx';
 import ProjectKickstarterPage from './pages/ProjectKickstarterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
-import MapViewPage from './pages/MapViewPage.jsx'; // 🌟 FINAL, STABLE MAP IMPORT 🌟
+import MapViewPage from './pages/MapViewPage.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 

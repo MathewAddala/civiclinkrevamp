@@ -6,7 +6,7 @@ import { ArrowRight, Activity, MapPin, ShieldCheck, Zap } from 'lucide-react';
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden font-inter">
-      {/* Dynamic Background */}
+
       <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-gray-500/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-stone-500/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
@@ -53,7 +53,7 @@ export default function LandingPage() {
         </motion.div>
       </motion.div>
 
-      {/* Feature Section */}
+
       <motion.div 
         id="features"
         initial={{ opacity: 0, y: 50 }}

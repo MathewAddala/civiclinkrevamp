@@ -204,7 +204,7 @@ export default function Sandbox() {
           </div>
         </div>
 
-        {/* Unified Progress Bar */}
+
         <div className="mb-6">
           <div className="w-full bg-white/5 rounded-full h-3 overflow-hidden border border-white/10">
             <motion.div
@@ -260,7 +260,7 @@ export default function Sandbox() {
         ) : (
           <div className="space-y-6">
             <div className={`grid grid-cols-1 ${isAdmin ? 'md:grid-cols-2' : ''} gap-6`}>
-              {/* Average Panel */}
+
               <div className="p-5 rounded-3xl glass-panel space-y-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-semibold text-white">Community Average</h3>
@@ -292,7 +292,7 @@ export default function Sandbox() {
                 </motion.button>
               </div>
 
-              {/* Override Panel */}
+
               <div className="p-5 rounded-3xl glass-panel space-y-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-semibold text-white">Manual Override</h3>

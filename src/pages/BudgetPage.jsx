@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import Sandbox from '../simulation/components/Sandbox.jsx'; // NEW IMPORT
+import Sandbox from '../simulation/components/Sandbox.jsx';
 import { adminService } from '../services/adminService.js';
 
 export default function BudgetPage() {
@@ -143,7 +143,7 @@ export default function BudgetPage() {
         </div>
       )}
       
-      <Sandbox /> {/* Render the Sandbox component */}
+      <Sandbox />
     </motion.div>
   );
 }

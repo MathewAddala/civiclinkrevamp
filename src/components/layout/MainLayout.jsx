@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar.jsx'; // Assuming Sidebar exists
-import Header from './Header.jsx'; // Assuming Header exists
+import Sidebar from './Sidebar.jsx';
+import Header from './Header.jsx';
 
 export default function MainLayout() {
   return (
@@ -10,7 +10,7 @@ export default function MainLayout() {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
-          <Outlet /> {/* Renders the child route component */}
+          <Outlet />
         </main>
       </div>
     </div>

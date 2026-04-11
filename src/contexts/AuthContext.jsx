@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // On initial app load, validate session against backend.
+
   useEffect(() => {
     const bootstrapUser = async () => {
       const token = localStorage.getItem(TOKEN_KEY);
@@ -73,11 +73,11 @@ export const AuthProvider = ({ children }) => {
       const profile = await request('/me/profile');
       if (profile?.role) setUser(profile);
     } catch {
-      // ignore
+
     }
   };
 
-  // Login function
+
   const login = async (email, password) => {
     if (isAuthenticating) return false;
     setError(null);

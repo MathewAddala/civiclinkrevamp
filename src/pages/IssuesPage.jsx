@@ -34,7 +34,7 @@ const toIssueListItem = (issue) => ({
   attachmentName: issue.attachmentName || null,
 });
 
-// Location is selected from map; optional label is user-provided.
+
 
 export default function IssuesPage() {
   const { isAdmin } = useAuth();

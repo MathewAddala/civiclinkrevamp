@@ -1,4 +1,4 @@
-// src/components/common/IssueListItem.jsx
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, AlertTriangle, Wrench, CheckCircle2, UsersRound } from 'lucide-react';
@@ -11,7 +11,7 @@ export default function IssueListItem({ issue, delay, isAdmin, onManage, onView 
     resolved: { icon: <CheckCircle2 size={16} />, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20' },
   };
 
-  const currentStatusStyle = statusStyles[issue.status] || statusStyles.open; // Fallback
+  const currentStatusStyle = statusStyles[issue.status] || statusStyles.open;
 
   return (
     <motion.div 

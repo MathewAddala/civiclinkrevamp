@@ -9,13 +9,13 @@ export default function Sidebar() {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Budget Engine', path: '/budget', icon: <Coins size={20} /> }, // Corrected: No adminOnly flag
+    { name: 'Budget Engine', path: '/budget', icon: <Coins size={20} /> },
     { name: 'Issue Hub', path: '/issues', icon: <Wrench size={20} /> },
     { name: 'Project Kickstarter', path: '/kickstarter', icon: <PackagePlus size={20} /> },
   ];
 
   const NavItem = ({ item }) => {
-    // ... (NavItem component remains the same)
+
     const activeClass = "bg-white/10 border border-white/5 shadow-lg text-white";
     return (
       <NavLink
@@ -49,7 +49,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* CORRECTED: User info and Logout button are added back here for visibility */}
+
       <div className="mt-auto pt-6 border-t border-gray-800">
         {user && user.role !== 'guest' && (
           <div className="flex items-center p-3 mb-4 rounded-xl bg-white/5 border border-white/5">

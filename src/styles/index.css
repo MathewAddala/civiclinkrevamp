@@ -8,7 +8,8 @@
 body {
   font-family: 'Inter', sans-serif;
   @apply text-gray-100;
-  /* Volcanic black to pure silver gradient */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
               radial-gradient(circle at bottom left, rgba(60, 60, 60, 0.4) 0%, #050505 50%);
   background-color: #050505;
@@ -21,15 +22,13 @@ body {
   0% { background-position: 0% 0%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 50% 100%; }
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3 {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* Sleek custom scrollbar */
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -49,7 +48,7 @@ input:focus, button:focus, a:focus, select:focus {
   @apply outline-none ring-1 ring-gray-400/30;
 }
 
-/* Glass-panel glittering and industry-level premium rendering */
+
 .glass-panel {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
   backdrop-filter: blur(40px) saturate(150%);

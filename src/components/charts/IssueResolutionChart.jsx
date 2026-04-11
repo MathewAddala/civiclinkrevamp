@@ -1,4 +1,4 @@
-// src/components/charts/IssueResolutionChart.jsx
+
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -31,11 +31,11 @@ export default function IssueResolutionChart({ data = [] }) {
     return (
         <div className="mt-6 p-2 relative">
             <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="100%" height="150">
-                {/* Grid Lines (Minimalist) */}
+
                 <line x1="0" y1="10" x2={chartWidth} y2="10" stroke="#374151" strokeWidth="0.5" />
                 <line x1="0" y1={chartHeight - 30} x2={chartWidth} y2={chartHeight - 30} stroke="#374151" strokeWidth="0.5" />
 
-                {/* Resolved Line (Green Glow) */}
+
                 <motion.path
                     d={getPathD(issueData, 'resolved')}
                     fill="none"
@@ -47,7 +47,7 @@ export default function IssueResolutionChart({ data = [] }) {
                     filter="drop-shadow(0 0 5px rgba(76, 175, 80, 0.8))"
                 />
 
-                {/* Reported Line (Blue Glow) */}
+
                 <motion.path
                     d={getPathD(issueData, 'reported')}
                     fill="none"
@@ -59,7 +59,7 @@ export default function IssueResolutionChart({ data = [] }) {
                     filter="drop-shadow(0 0 5px rgba(59, 130, 246, 0.8))"
                 />
                 
-                {/* X-Axis Labels */}
+
                 {issueData.map((d, i) => (
                     <text 
                         key={d.name} 
@@ -73,7 +73,7 @@ export default function IssueResolutionChart({ data = [] }) {
                     </text>
                 ))}
 
-                {/* Legend */}
+
                 <circle cx={chartWidth - 110} cy="18" r="4" fill="#3B82F6" />
                 <text x={chartWidth - 100} y="21" fontSize="10" fill="#E5E7EB">Reported</text>
                 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Bell, Settings, UserCircle } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext.jsx'; // Adjust path as needed
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 export default function Header() {
-  const { user } = useAuth(); // Get user from context
+  const { user } = useAuth();
 
   return (
     <header className="bg-transparent backdrop-blur-md border-b border-white/5 p-4 flex items-center justify-between sticky top-0 z-10">

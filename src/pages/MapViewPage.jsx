@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { issueService } from '../services/issueService.js';
 
-// 🌟 CRITICAL FIX 1: Leaflet Icon Redefinition 🌟
-// This prevents default marker loading failure.
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -15,13 +14,13 @@ L.Icon.Default.mergeOptions({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
-// ---------------------------------------------
 
-// KL University coordinates: Latitude ~16.44N, Longitude ~80.62E
+
+
 const KL_UNIVERSITY_CENTER = [16.4427, 80.6228]; 
 const MAP_ZOOM = 16; 
 
-// Helper to create custom colored dots (simulating heat)
+
 const createCustomIcon = (color) => {
     return new L.DivIcon({
         className: `custom-map-marker-${color}`,
@@ -38,22 +37,21 @@ const customIcons = {
     blue: createCustomIcon('blue'),
 };
 
-// 🌟 CRITICAL FIX 2: Map Redrawer Component (Forces correct sizing) 🌟
+
 const MapRedrawer = () => {
     const map = useMap();
     useEffect(() => {
-        // Forces the map to recalculate its dimensions immediately upon mount
         map.invalidateSize(); 
     }, [map]); 
     return null;
 };
-// -------------------------------------------------------------
+
 
 export default function MapViewPage() {
     const navigate = useNavigate();
     const [issues, setIssues] = useState([]);
     
-    // Most stable, key-free tile layer URL
+
     const FINAL_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     useEffect(() => {
@@ -116,7 +114,7 @@ export default function MapViewPage() {
                 className="w-full h-full"
                 style={{ marginTop: '64px' }} 
             >
-                {/* Redrawer is essential for full-page views */}
+
                 <MapRedrawer /> 
 
                 <TileLayer

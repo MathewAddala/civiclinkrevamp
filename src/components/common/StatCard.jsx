@@ -23,7 +23,7 @@ export default function StatCard({ title, value, Icon, color = 'blue' }) {
       whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(59, 130, 246, 0.25)" }} 
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      {/* Background glowing circle for futuristic touch */}
+
       <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full opacity-10 blur-xl ${colors[color].replace('text', 'bg')}`} />
 
       <div className="flex items-center justify-between w-full z-10 relative mb-4">

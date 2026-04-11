@@ -1,4 +1,4 @@
-// src/components/ui/Modal.jsx
+
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -12,15 +12,15 @@ export default function Modal({ isOpen, onClose, title, children }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose} // Close modal if backdrop is clicked
+          onClick={onClose}
         >
-          {/* Reverting max-w to max-w-lg (standard size) and removing negative margins */}
+
           <motion.div
             className="holographic-card w-full max-w-lg max-h-[calc(100vh-4rem)] flex flex-col p-6 min-h-0"
             initial={{ scale: 0.9, y: 50 }}
             animate={{ scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }}
             exit={{ scale: 0.9, y: 50 }}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when modal content is clicked
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex shrink-0 justify-between items-center mb-4 gap-3">
               <h3 className="text-2xl font-bold text-white font-orbitron">{title}</h3>
