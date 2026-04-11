@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'; 
 import { motion } from 'framer-motion';
-import { LogIn, User, Shield, Mail, Lock, UserCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, UserCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
-import MathCaptcha from '../components/common/MathCaptcha.jsx'; // 🌟 NEW IMPORT 🌟
+import MathCaptcha from '../components/common/MathCaptcha.jsx';
 
 const AuthForm = ({ formType }) => {
     const { login, register, isAuthenticating, error, setError } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
-    const [role, setRole] = useState('citizen');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [formError, setFormError] = useState('');
     const [isCaptchaValid, setIsCaptchaValid] = useState(false); // 🌟 NEW CAPTCHA STATE 🌟
@@ -46,7 +45,7 @@ const AuthForm = ({ formType }) => {
         if (isLogin) {
             await login(email, password);
         } else {
-            await register(name, email, password, role);
+            await register(name, email, password, 'citizen');
         }
     };
     
@@ -63,7 +62,7 @@ const AuthForm = ({ formType }) => {
                 <motion.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 bg-red-900/50 text-red-300 rounded-lg border border-red-700"
+                    className="p-4 bg-red-500/10 text-red-400 rounded-xl border border-red-500/20"
                 >
                     {error || formError}
                 </motion.div>
@@ -77,17 +76,12 @@ const AuthForm = ({ formType }) => {
                         <div className="relative">
                             <UserCircle size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                             <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)}
-                                className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="John Doe" disabled={isAuthenticating} />
+                                className="w-full p-3.5 pl-11 rounded-xl bg-white/5 text-white border border-white/10 focus:border-white/50 outline-none transition-colors shadow-inner" disabled={isAuthenticating} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="role" className="block text-gray-400 text-sm font-bold mb-2">Role</label>
-                        <select id="role" value={role} onChange={(e) => setRole(e.target.value)}
-                            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 appearance-none" disabled={isAuthenticating}>
-                            <option value="citizen">Citizen (Standard Access)</option>
-                            <option value="admin">Admin (Requires Approval)</option>
-                        </select>
-                    </div>
+                    <p className="text-xs text-gray-500 -mt-1">
+                        New users are registered as citizens. Admin access is granted only by an existing admin.
+                    </p>
                 </>
             )}
 
@@ -97,7 +91,7 @@ const AuthForm = ({ formType }) => {
                 <div className="relative">
                     <Mail size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="name@example.com" disabled={isAuthenticating} />
+                        className="w-full p-3.5 pl-11 rounded-xl bg-black/40 text-white border border-white/10 focus:border-white/30 focus:shadow-[0_0_15px_rgba(255,255,255,0.05)] outline-none transition-all" placeholder="name@example.com" disabled={isAuthenticating} />
                 </div>
             </div>
 
@@ -107,7 +101,7 @@ const AuthForm = ({ formType }) => {
                 <div className="relative">
                     <Lock size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="Minimum 6 characters" disabled={isAuthenticating} />
+                        className="w-full p-3.5 pl-11 rounded-xl bg-black/40 text-white border border-white/10 focus:border-white/30 focus:shadow-[0_0_15px_rgba(255,255,255,0.05)] outline-none transition-all" placeholder="Minimum 6 characters" disabled={isAuthenticating} />
                 </div>
             </div>
 
@@ -118,26 +112,28 @@ const AuthForm = ({ formType }) => {
                     <div className="relative">
                         <Lock size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                         <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" placeholder="Confirm your password" disabled={isAuthenticating} />
+                            className="w-full p-3.5 pl-11 rounded-xl bg-white/5 text-white border border-white/10 focus:border-blue-500 outline-none transition-colors shadow-inner" placeholder="Confirm your password" disabled={isAuthenticating} />
                     </div>
                 </div>
             )}
             
             {/* 🌟 CAPTCHA INTEGRATION 🌟 */}
-            <MathCaptcha 
-                onValidationChange={setIsCaptchaValid} 
-                isAuthenticating={isAuthenticating}
-            />
+            <div className="glass-panel p-3 rounded-xl border-white/10 backdrop-blur-lg">
+                <MathCaptcha 
+                    onValidationChange={setIsCaptchaValid} 
+                    isAuthenticating={isAuthenticating}
+                />
+            </div>
 
             <motion.button
                 type="submit"
-                disabled={isSubmitDisabled} // Use the combined disabled state
-                className={`w-full p-3 rounded-lg font-semibold transition-colors glow-effect flex items-center justify-center mt-6 ${isLogin ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'} disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed`}
+                disabled={isSubmitDisabled}
+                className={`w-full p-4 rounded-xl font-bold transition-all flex items-center justify-center mt-6 shadow-[0_0_20px_rgba(255,255,255,0.1)] ${isLogin ? 'bg-gradient-to-r from-gray-200 to-white text-black hover:scale-[1.02]' : 'bg-gradient-to-r from-gray-200 to-white text-black hover:scale-[1.02]'} disabled:opacity-50 disabled:cursor-not-allowed`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >
                 {isAuthenticating && (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
                 )}
                 {buttonText}
             </motion.button>
@@ -154,31 +150,32 @@ export default function LoginPage() {
   // FIX: If user is logged in, redirect them away from /login
   useEffect(() => {
     if (user && user.role !== 'guest') {
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 text-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#050505] text-gray-100 p-4 relative overflow-hidden">
+      {/* Background flare */}
+      <div className="absolute top-[-50px] right-[-50px] w-[300px] h-[300px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+      
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="holographic-card p-8 rounded-xl w-full max-w-md"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="glass-panel p-8 rounded-[32px] w-full max-w-sm z-10 border border-white/10"
       >
-        <div className="text-center mb-8">
-          <LogIn size={64} className="mx-auto text-blue-500 glow-text" strokeWidth={1.5}/>
-          <h1 className="text-4xl font-extrabold text-white mt-4 glow-text font-orbitron">CivicLink</h1>
-          <p className="text-gray-400 mt-2">Access the platform securely.</p>
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-extrabold text-white font-orbitron tracking-tight">CivicLink</h1>
         </div>
 
         {/* Auth Mode Toggle */}
-        <div className="flex mb-6 bg-gray-800 rounded-lg p-1">
+        <div className="flex mb-6 bg-black/40 rounded-xl p-1.5 border border-white/5 backdrop-blur-md">
             <button
                 type="button"
                 onClick={() => setAuthMode('login')}
-                className={`flex-1 py-2 rounded-lg font-semibold transition-colors ${authMode === 'login' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                className={`flex-1 py-2 text-sm rounded-lg font-bold transition-all ${authMode === 'login' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-gray-500 hover:text-white'}`}
                 disabled={isAuthenticating}
             >
                 Login
@@ -186,10 +183,10 @@ export default function LoginPage() {
             <button
                 type="button"
                 onClick={() => setAuthMode('signup')}
-                className={`flex-1 py-2 rounded-lg font-semibold transition-colors ${authMode === 'signup' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                className={`flex-1 py-2 text-sm rounded-lg font-bold transition-all ${authMode === 'signup' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-gray-500 hover:text-white'}`}
                 disabled={isAuthenticating}
             >
-                Sign Up
+                Create Account
             </button>
         </div>
 

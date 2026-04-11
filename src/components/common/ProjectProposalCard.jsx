@@ -1,69 +1,88 @@
 // src/components/common/ProjectProposalCard.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Target, CheckCircle } from 'lucide-react';
+import { Users, Target, CheckCircle, XCircle } from 'lucide-react';
 
-export default function ProjectProposalCard({ project, delay, isAdmin }) {
+export default function ProjectProposalCard({ project, delay, isAdmin, onApprove, onReject, onSupport }) {
   const projectColors = {
-    green: 'green',
-    purple: 'purple',
-    blue: 'blue',
-    yellow: 'yellow',
-    red: 'red',
-    indigo: 'indigo',
+    green: { text: 'text-green-400', bar: 'from-green-500 to-green-400' },
+    purple: { text: 'text-purple-400', bar: 'from-purple-500 to-purple-400' },
+    blue: { text: 'text-blue-400', bar: 'from-blue-500 to-blue-400' },
+    yellow: { text: 'text-yellow-400', bar: 'from-yellow-500 to-yellow-400' },
+    red: { text: 'text-red-400', bar: 'from-red-500 to-red-400' },
+    indigo: { text: 'text-indigo-400', bar: 'from-indigo-500 to-indigo-400' },
   };
-  const currentColor = projectColors[project.color] || 'blue'; // Fallback color
+  const currentColor = projectColors[project.color] || projectColors.blue;
+  const fundingRatio = project.goal > 0 ? (project.current / project.goal) * 100 : 0;
+  const isFullyFunded = project.goal > 0 && project.current >= project.goal;
+  const displayStatus = project.status || 'pending';
 
   return (
     <motion.div 
-      className="holographic-card p-6 flex flex-col h-full"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="glass-panel p-6 flex flex-col h-full rounded-3xl"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: delay * 0.1, duration: 0.5 }}
-      whileHover={{ y: -8, boxShadow: "0 0 25px rgba(59, 130, 246, 0.25)" }}
+      whileHover={{ y: -5 }}
     >
-      <div className="flex justify-between items-center mb-2">
-        <h3 className={`text-xl font-bold text-${currentColor}-400 font-orbitron`}>{project.title}</h3>
-        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${project.status === 'approved' ? 'bg-green-900/50 text-green-400' : project.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' : 'bg-blue-900/50 text-blue-400'}`}>
-          {project.status.toUpperCase()}
+        <div className="flex justify-between items-center mb-2">
+        <h3 className="text-xl font-bold text-white tracking-wide">{project.title}</h3>
+        <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold tracking-wider ${displayStatus === 'approved' ? 'bg-white/10 border border-white/20 text-gray-300' : displayStatus === 'pending' ? 'bg-white/5 border border-white/10 text-gray-400' : 'bg-black/40 border border-white/5 text-gray-500'}`}>
+          {displayStatus.toUpperCase()}
         </span>
       </div>
-      <p className="text-gray-400 mt-2 flex-grow text-sm">{project.desc}</p>
+      <p className="text-xs text-gray-500 mb-2 font-medium">SECTOR: <span className="text-gray-300 ml-1">{project.sector || 'Other'}</span></p>
+      <p className="text-gray-400 mt-2 flex-grow text-sm leading-relaxed">{project.desc}</p>
       <div className="mt-6">
-        <div className="flex justify-between items-center text-sm text-gray-300 mb-2">
-          <span className="flex items-center"><Target size={14} className="mr-2"/> Goal: {project.goal} Tokens</span>
-          <span className="flex items-center"><Users size={14} className="mr-2"/> {((project.current / project.goal) * 100).toFixed(0)}% Funded</span>
+        <div className="flex justify-between items-center text-xs font-semibold text-gray-400 mb-2 tracking-wide uppercase">
+          <span className="flex items-center"><Target size={14} className="mr-1"/> {project.goal} Tokens</span>
+          <span className="flex items-center"><Users size={14} className="mr-1"/> {fundingRatio.toFixed(0)}% Funded</span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <motion.div 
-            className={`bg-gradient-to-r from-${currentColor}-500 to-${currentColor}-400 h-2.5 rounded-full`}
+        <div className="w-full bg-white/5 border border-white/10 rounded-full h-2">
+          <motion.div
+            className="bg-gray-300 h-2 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.2)]"
             initial={{ width: 0 }}
-            animate={{ width: `${(project.current / project.goal) * 100}%` }}
+            animate={{ width: `${Math.min(100, fundingRatio)}%` }}
             transition={{ duration: 1, delay: delay * 0.1 + 0.5 }}
           />
         </div>
         {isAdmin ? (
-            project.status === 'pending' ? (
-              <motion.button 
-                  className="w-full mt-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors glow-effect"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-              >
-                  <CheckCircle size={18} className="mr-2 inline-block"/> Approve Project
-              </motion.button>
+            displayStatus !== 'approved' && displayStatus !== 'rejected' ? (
+              <div className="grid grid-cols-2 gap-3 mt-6">
+                <motion.button 
+                    type="button"
+                    onClick={() => onApprove?.(project)}
+                    className="py-2.5 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-all text-sm"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                >
+                    <CheckCircle size={16} className="mr-1.5 inline-block"/> Approve
+                </motion.button>
+                <motion.button
+                    type="button"
+                    onClick={() => onReject?.(project)}
+                    className="py-2.5 bg-white/5 border border-white/10 text-gray-300 font-semibold rounded-xl hover:bg-white/10 transition-all text-sm"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                >
+                    <XCircle size={16} className="mr-1.5 inline-block"/> Reject
+                </motion.button>
+              </div>
             ) : (
-              <div className="w-full mt-6 py-2 bg-gray-600 text-gray-400 font-semibold rounded-lg cursor-not-allowed text-center">
-                  Project {project.status.toUpperCase()}
+              <div className="w-full mt-6 py-2.5 bg-white/5 border border-white/10 text-gray-500 font-semibold rounded-xl cursor-not-allowed text-center text-sm">
+                  Project {displayStatus}
               </div>
             )
         ) : (
             <motion.button 
-              className="w-full mt-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors glow-effect disabled:bg-gray-600 disabled:cursor-not-allowed"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={project.status === 'approved'}
+              className="w-full mt-6 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+              type="button"
+              onClick={() => onSupport?.(project)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={displayStatus === 'approved' || isFullyFunded}
             >
-              {project.status === 'approved' ? 'Funded & Approved' : 'View & Support'}
+              {displayStatus === 'approved' ? 'Funded & Approved' : isFullyFunded ? 'Awaiting Administration' : 'View & Support'}
             </motion.button>
         )}
       </div>

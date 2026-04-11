@@ -2,14 +2,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const issueData = [
-    { name: 'Jan', Resolved: 40, Reported: 60, resolvedY: 100, reportedY: 80 },
-    { name: 'Feb', Resolved: 35, Reported: 55, resolvedY: 105, reportedY: 85 },
-    { name: 'Mar', Resolved: 50, Reported: 70, resolvedY: 90, reportedY: 70 },
-    { name: 'Apr', Resolved: 65, Reported: 68, resolvedY: 75, reportedY: 72 },
-    { name: 'May', Resolved: 60, Reported: 75, resolvedY: 80, reportedY: 65 },
-    { name: 'Jun', Resolved: 80, Reported: 82, resolvedY: 60, reportedY: 58 },
-];
+const toPlottable = (data = []) => {
+    const maxValue = Math.max(1, ...data.map((d) => Math.max(d.reported || 0, d.resolved || 0)));
+    return data.map((d) => ({
+        ...d,
+        reportedY: 120 - ((d.reported || 0) / maxValue) * 90,
+        resolvedY: 120 - ((d.resolved || 0) / maxValue) * 90,
+    }));
+};
 
 const getPathD = (data, key) => {
     return data.map((d, i) => {
@@ -19,9 +19,14 @@ const getPathD = (data, key) => {
     }).join(' ');
 };
 
-export default function IssueResolutionChart() {
+export default function IssueResolutionChart({ data = [] }) {
+    const issueData = toPlottable(data);
     const chartHeight = 150;
-    const chartWidth = issueData.length * 60 + 40;
+    const chartWidth = Math.max(280, issueData.length * 60 + 40);
+
+    if (!issueData.length) {
+        return <p className="text-gray-400">No issue trend data available yet.</p>;
+    }
 
     return (
         <div className="mt-6 p-2 relative">

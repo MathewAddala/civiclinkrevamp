@@ -1,26 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService.js';
+import { request } from '../services/apiClient.js';
 
 const AuthContext = createContext(null);
+const GUEST_USER = { name: 'Guest', role: 'guest' };
+const TOKEN_KEY = 'civiclinkToken';
 
-// Function to simulate getting all registered users from localStorage "database"
-const getRegisteredUsers = () => {
-    try {
-        const users = localStorage.getItem('civiclinkUsers');
-        return users ? JSON.parse(users) : {};
-    } catch (error) {
-        console.error("Error reading users from localStorage:", error);
-        return {};
-    }
-};
+const normalizeAuthResponse = (response) => {
+  if (!response || typeof response !== 'object') {
+    return { user: null, token: null };
+  }
 
-// Function to simulate saving all registered users to localStorage "database"
-const saveRegisteredUsers = (users) => {
-    try {
-        localStorage.setItem('civiclinkUsers', JSON.stringify(users));
-    } catch (error) {
-        console.error("Error saving users to localStorage:", error);
-    }
+  return {
+    user: response.user || response.data?.user || null,
+    token: response.token || response.data?.token || null,
+  };
 };
 
 export const AuthProvider = ({ children }) => {
@@ -31,86 +26,119 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // On initial app load, check localStorage for a saved user session.
+  // On initial app load, validate session against backend.
   useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem('civiclinkUser');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      } else {
-        setUser({ name: 'Guest', role: 'guest' });
+    const bootstrapUser = async () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        setUser(GUEST_USER);
+        setInitialLoadComplete(true);
+        return;
       }
-    } catch (error) {
-      setUser({ name: 'Guest', role: 'guest' });
-    } finally {
-      setInitialLoadComplete(true);
-    }
+
+      try {
+        const currentUserResponse = await authService.getCurrentUser();
+        const currentUser = currentUserResponse?.user || currentUserResponse?.data || currentUserResponse;
+        if (currentUser?.role) {
+          setUser(currentUser);
+        } else {
+          setUser(GUEST_USER);
+          localStorage.removeItem(TOKEN_KEY);
+        }
+      } catch {
+        setUser(GUEST_USER);
+        localStorage.removeItem(TOKEN_KEY);
+      } finally {
+        setInitialLoadComplete(true);
+      }
+    };
+
+    bootstrapUser();
   }, []);
+
+  const handleAuthError = (err, fallbackMessage) => {
+    setError(err instanceof Error ? err.message : fallbackMessage);
+    setIsAuthenticating(false);
+  };
+
+  const storeSession = (sessionUser, token) => {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+    setUser(sessionUser);
+  };
+
+  const refreshProfile = async () => {
+    try {
+      const profile = await request('/me/profile');
+      if (profile?.role) setUser(profile);
+    } catch {
+      // ignore
+    }
+  };
 
   // Login function
   const login = async (email, password) => {
-    if (isAuthenticating) return; 
+    if (isAuthenticating) return false;
     setError(null);
     setIsAuthenticating(true);
 
-    await new Promise(resolve => setTimeout(resolve, 700));
-
-    const users = getRegisteredUsers();
-    const userToFind = Object.values(users).find(
-        u => u.email === email && u.password === password
-    );
-
-    if (userToFind) {
-        setUser(userToFind);
-        localStorage.setItem('civiclinkUser', JSON.stringify(userToFind));
-        navigate('/', { replace: true }); 
-    } else {
-        setError("Invalid email or password. Please try again.");
+    try {
+      const response = await authService.login({ email, password });
+      const session = normalizeAuthResponse(response);
+      if (!session.user) {
+        throw new Error('Invalid login response from server.');
+      }
+      storeSession(session.user, session.token);
+      navigate('/dashboard', { replace: true });
+      await refreshProfile();
+      setIsAuthenticating(false);
+      return true;
+    } catch (err) {
+      handleAuthError(err, 'Login failed. Please try again.');
+      return false;
     }
-    
-    setIsAuthenticating(false);
   };
-  
-  //  NEW: Registration Function 
+
   const register = async (name, email, password, role) => {
-    if (isAuthenticating) return;
+    if (isAuthenticating) return false;
     setError(null);
     setIsAuthenticating(true);
 
-    await new Promise(resolve => setTimeout(resolve, 700));
-    
-    const users = getRegisteredUsers();
-
-    if (users[email]) {
-        setError("Account already exists with this email address.");
-        setIsAuthenticating(false);
-        return false;
+    try {
+      const response = await authService.register({ name, email, password, role });
+      const session = normalizeAuthResponse(response);
+      if (!session.user) {
+        throw new Error('Invalid registration response from server.');
+      }
+      storeSession(session.user, session.token);
+      navigate('/dashboard', { replace: true });
+      await refreshProfile();
+      setIsAuthenticating(false);
+      return true;
+    } catch (err) {
+      handleAuthError(err, 'Registration failed. Please try again.');
+      return false;
     }
-
-    const newUser = { name, email, password, role, id: Date.now().toString() };
-    
-    // Save new user to the simulated database
-    users[email] = newUser;
-    saveRegisteredUsers(users);
-
-    // Automatically log in the new user
-    setUser(newUser);
-    localStorage.setItem('civiclinkUser', JSON.stringify(newUser));
-    navigate('/', { replace: true });
-    
-    setIsAuthenticating(false);
-    return true;
   };
 
-  // Logout function
   const logout = () => {
-    setUser({ name: 'Guest', role: 'guest' });
-    localStorage.removeItem('civiclinkUser');
+    setUser(GUEST_USER);
+    localStorage.removeItem(TOKEN_KEY);
     navigate('/login', { replace: true });
   };
 
-  // Expose register and error state
-  const value = { user, login, register, logout, isAdmin: user?.role === 'admin', isAuthenticating, error, setError };
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    isAdmin: user?.role === 'admin',
+    refreshProfile,
+    isAuthenticating,
+    error,
+    setError,
+  };
 
   if (!initialLoadComplete) {
     return (

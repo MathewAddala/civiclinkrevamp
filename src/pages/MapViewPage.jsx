@@ -1,10 +1,10 @@
-// src/pages/MapViewPage.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { motion } from 'framer-motion';
 import L from 'leaflet'; 
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { issueService } from '../services/issueService.js';
 
 // 🌟 CRITICAL FIX 1: Leaflet Icon Redefinition 🌟
 // This prevents default marker loading failure.
@@ -20,14 +20,6 @@ L.Icon.Default.mergeOptions({
 // KL University coordinates: Latitude ~16.44N, Longitude ~80.62E
 const KL_UNIVERSITY_CENTER = [16.4427, 80.6228]; 
 const MAP_ZOOM = 16; 
-
-// Mock issue data
-const issueSpots = [
-    { id: 1, title: "Water Leak near Hostel", priority: 'High', lat: 16.4420, lng: 80.6210, color: 'red' },
-    { id: 2, title: "Outage near Main Gate", priority: 'Medium', lat: 16.4450, lng: 80.6240, color: 'yellow' },
-    { id: 3, title: "Pothole on Campus Road", priority: 'High', lat: 16.4435, lng: 80.6235, color: 'red' },
-    { id: 4, title: "Waste overflow", priority: 'Low', lat: 16.4410, lng: 80.6230, color: 'blue' },
-];
 
 // Helper to create custom colored dots (simulating heat)
 const createCustomIcon = (color) => {
@@ -59,26 +51,60 @@ const MapRedrawer = () => {
 
 export default function MapViewPage() {
     const navigate = useNavigate();
+    const [issues, setIssues] = useState([]);
     
     // Most stable, key-free tile layer URL
     const FINAL_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+    useEffect(() => {
+        const loadIssues = async () => {
+            try {
+                const response = await issueService.list();
+                const rows = Array.isArray(response) ? response : (response?.data || []);
+                setIssues(rows);
+            } catch {
+                setIssues([]);
+            }
+        };
+
+        loadIssues();
+    }, []);
+
+    const issueSpots = useMemo(() => {
+        return issues
+            .filter((item) => String(item.status || '').toLowerCase() !== 'resolved')
+            .filter((item) => Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lng)))
+            .map((item) => ({
+                id: item.id || Math.random().toString(36),
+                title: item.title || item.description || 'Issue',
+                priority: item.priority || 'Low',
+                lat: Number(item.lat),
+                lng: Number(item.lng),
+                color:
+                    item.priority === 'High'
+                        ? 'red'
+                        : item.priority === 'Medium'
+                            ? 'yellow'
+                            : 'blue',
+            }));
+    }, [issues]);
+
     return (
         <motion.div 
-            className="w-full h-screen absolute inset-0 bg-gray-950" 
+            className="w-full h-screen absolute inset-0 bg-transparent" 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }}
         >
-            <div className="absolute top-0 left-0 right-0 z-50 p-4 bg-gray-900/90 flex items-center shadow-lg border-b border-gray-700" style={{ height: '64px' }}>
+            <div className="absolute top-0 left-0 right-0 z-50 p-4 bg-transparent backdrop-blur-md border-b border-white/5 flex items-center shadow-lg" style={{ height: '64px' }}>
                 <motion.button 
                     onClick={() => navigate(-1)}
-                    className="flex items-center px-3 py-2 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex items-center px-3 py-2 text-white rounded-xl hover:bg-white/10 transition-colors"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
                     <ArrowLeft size={20} className="mr-2"/> Back to Dashboard
                 </motion.button>
-                <h1 className="text-2xl font-extrabold text-white ml-6 font-orbitron">
+                <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 ml-6 tracking-tight font-orbitron">
                     Final Issue Map View
                 </h1>
             </div>
@@ -100,6 +126,8 @@ export default function MapViewPage() {
                 
                 {issueSpots.map(spot => {
                     const icon = customIcons[spot.color] || customIcons.blue;
+                    const priorityTextColor =
+                        spot.color === 'red' ? 'text-red-600' : spot.color === 'yellow' ? 'text-orange-600' : 'text-blue-600';
                     return (
                         <Marker 
                             key={spot.id} 
@@ -109,7 +137,7 @@ export default function MapViewPage() {
                             <Popup>
                                 <div className="text-gray-900 font-inter">
                                     <p className="font-bold text-lg">{spot.title}</p>
-                                    <p className={`text-sm font-semibold text-${spot.color}-600`}>Priority: {spot.priority}</p>
+                                    <p className={`text-sm font-semibold ${priorityTextColor}`}>Priority: {spot.priority}</p>
                                 </div>
                             </Popup>
                         </Marker>

@@ -1,19 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const budgetData = [
-  { sector: 'Transportation', value: 35, color: 'bg-blue-500' },
-  { sector: 'Healthcare', value: 25, color: 'bg-green-500' },
-  { sector: 'Sanitation', value: 20, color: 'bg-yellow-500' },
-  { sector: 'Education', value: 10, color: 'bg-purple-500' },
-  { sector: 'Parks & Rec', value: 10, color: 'bg-pink-500' },
-];
-
-export default function BudgetChart() {
+export default function BudgetChart({ budgetData = [] }) {
   return (
     <div className="holographic-card p-6 shadow-xl h-full">
       <h3 className="font-bold text-xl mb-6 text-gray-100 glow-text font-orbitron">Live Budget Allocation Overview</h3>
       <div className="space-y-6">
+        {budgetData.length === 0 && <p className="text-gray-400">No budget data found.</p>}
         {budgetData.map((item, index) => (
           <div key={item.sector} className="w-full">
             <div className="flex justify-between items-center mb-2">
